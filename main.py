@@ -13,8 +13,9 @@ import numpy as np
 def VolumeControl(length, volume_interface):
     if volume_interface:
         volMin, volMax, _ = volume_interface.GetVolumeRange()
-        vol = max(0.0, min(1.0, length / 100))  # Adjust the scaling factor as needed
+        vol = max(0.0, min(1.0, length / 100))  
         volume_interface.SetMasterVolumeLevelScalar(vol, None)
+        time.sleep(0.3)
 
 
 
@@ -25,6 +26,8 @@ def HandTracking(volume_interface):
     mpHands = mp.solutions.hands
     hands = mpHands.Hands(static_image_mode=False, max_num_hands=2)
     mpDraw = mp.solutions.drawing_utils
+
+    print("Listening for Input")
 
     while True:
         success, img = cap.read()
@@ -58,10 +61,10 @@ def HandTracking(volume_interface):
 
 
         cTime = time.time()
-        fps = 1 / (cTime - pTime)
-        pTime = cTime
-        cv2.putText(img, f'FPS:{int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-        cv2.imshow("Video", img)
+        #fps = 1 / (cTime - pTime)
+        #pTime = cTime
+        #cv2.putText(img, f'FPS:{int(fps)}', (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        #cv2.imshow("Video", img)
 
         if cv2.waitKey(1) & 0xff == ord("q"):
             break
