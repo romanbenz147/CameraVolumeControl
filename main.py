@@ -10,17 +10,15 @@ from ctypes import cast, POINTER
 import numpy as np 
 
 
-def VolumeControl(length):
-    devices = AudioUtilities.GetSpeakers()
-    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-    volume = cast(interface, POINTER(IAudioEndpointVolume))
-    volMin, volMax = volume.GetVolumeRange()[:2]
-    vol = np.interp(length, [15, 220], [volMin, volMax])
-    volume.SetMasterVolumeLevel(vol, None) 
+def VolumeControl(length, volume_interface):
+    if volume_interface:
+        volMin, volMax, _ = volume_interface.GetVolumeRange()
+        vol = max(0.0, min(1.0, length / 100))  # Adjust the scaling factor as needed
+        volume_interface.SetMasterVolumeLevelScalar(vol, None)
 
 
 
-def HandTracking():
+def HandTracking(volume_interface):
     cap = cv2.VideoCapture(0)
     pTime = 0
 
@@ -55,8 +53,8 @@ def HandTracking():
                     cv2.circle(img, (x2, y2), 15, (255, 0, 0), cv2.FILLED)
                     cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
 
-                    length = hypot(x2 - x1, y2 - y1)
-                    #VolumeControl(length)
+                    length1 = hypot(x2 - x1, y2 - y1)
+                    VolumeControl(length1, volume)
 
 
         cTime = time.time()
@@ -69,4 +67,10 @@ def HandTracking():
             break
 
 
-HandTracking()
+devices = AudioUtilities.GetSpeakers()
+if not devices:
+    print("No audio devices found")
+else:
+    interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+    volume = cast(interface, POINTER(IAudioEndpointVolume))
+    HandTracking(volume)
