@@ -52,9 +52,9 @@ def HandTracking(volume_interface):
                     x1, y1 = lmList[4][1], lmList[4][2]
                     x2, y2 = lmList[8][1], lmList[8][2]
 
-                    cv2.circle(img, (x1, y1), 15, (255, 0, 0), cv2.FILLED)  
-                    cv2.circle(img, (x2, y2), 15, (255, 0, 0), cv2.FILLED)
-                    cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
+                    #cv2.circle(img, (x1, y1), 15, (255, 0, 0), cv2.FILLED)  
+                    #cv2.circle(img, (x2, y2), 15, (255, 0, 0), cv2.FILLED)
+                    #cv2.line(img, (x1, y1), (x2, y2), (255, 0, 0), 3)
 
                     length1 = hypot(x2 - x1, y2 - y1)
                     VolumeControl(length1, volume)
